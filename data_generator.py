@@ -4,6 +4,7 @@ them to the network for training or testing.
 """
 
 import json
+import os
 import numpy as np
 import random
 from python_speech_features import mfcc
@@ -169,7 +170,9 @@ class AudioGenerator():
         if self.sort_by_duration:
             self.sort_data_by_duration('train')
 
-    def load_validation_data(self, desc_file='valid_corpus.json'):
+    def load_validation_data(self, desc_file):
+        if desc_file==None:
+            desc_file = 'valid_corpus.json'
         self.load_metadata_from_desc_file(desc_file, 'validation')
         if self.sort_by_duration:
             self.sort_data_by_duration('valid')
@@ -280,7 +283,6 @@ def vis_train_features(index=0, desc_file=None):
     """ Visualizing the data point in the training set at the supplied index
     """
     # obtain spectrogram
-    print('vis_train :', desc_file)
     audio_gen = AudioGenerator(desc_file=desc_file, spectrogram=True)
     audio_gen.load_train_data(desc_file=desc_file)
     vis_audio_path = audio_gen.train_audio_paths[index]

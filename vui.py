@@ -85,6 +85,32 @@ def convert_flac_files(data_directory):
 wk_directory='/Users/carlos/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
 os.chdir(wk_directory)
 
+data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
+# TO CONVERT THE DATA FROM FLAC TO WAV
+# convert_flac_files(data_directory, )
 
-directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
-convert_flac_files(directory, )
+################################################################################
+
+from data_generator import vis_train_features
+json_file = 'train_corpus_local.json'
+# extract label and audio features for a single training example
+vis_text, vis_raw_audio, vis_mfcc_feature, \
+    vis_spectrogram_feature, vis_audio_path = \
+        vis_train_features(desc_file=json_file)
+
+################################################################################
+
+from IPython.display import Markdown, display
+from data_generator import vis_train_features, plot_raw_audio
+from IPython.display import Audio
+
+# plot audio signal
+plot_raw_audio(vis_raw_audio)
+# print length of audio signal
+display(Markdown('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape)))
+# print transcript corresponding to audio clip
+display(Markdown('**Transcript** : ' + str(vis_text)))
+# play the audio file
+Audio(vis_audio_path)
+
+################################################################################
