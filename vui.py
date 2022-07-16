@@ -1,11 +1,16 @@
 # Checking the json file with the original data to adapt it to my storage location
 # for the same data, and updating the file in a new file named: 'train_corpus_local.json'
+from IPython.display import Audio
+from data_generator import vis_train_features, plot_raw_audio
+from IPython.display import Markdown, display
+from data_generator import vis_train_features
 import json
 import os
 import numpy as np
 import soundfile as sf
 import miniaudio
 import array
+
 
 def json_to_local(desc_file='train_corpus.json',
                   new_file='train_corpus_local.json'):
@@ -27,12 +32,14 @@ def json_to_local(desc_file='train_corpus.json',
 
     print('New file ready')
 
+
 def play_back_file(filename):
     stream = miniaudio.stream_file(filename)
     device = miniaudio.PlaybackDevice()
     device.start(stream)
     input("Audio file playing in the background. Enter to stop playback: ")
     device.close()
+
 
 def flac_to_wav_wminiaudio(filename, new_file):
 
@@ -50,9 +57,9 @@ def flac_to_wav_wminiaudio(filename, new_file):
                                                 result.sample_rate)
     # note: currently it is not possible to provide a dithermode
     # to convert_frames()
-    result.num_frames = int(len(converted_frames) / \
-                                 result.nchannels / \
-                                 result.sample_width)
+    result.num_frames = int(len(converted_frames) /
+                            result.nchannels /
+                            result.sample_width)
     result.samples.frombytes(converted_frames)
     miniaudio.wav_write_file(new_file, result)
     # In case you want to print the output file info: decomment
@@ -63,6 +70,7 @@ def flac_to_wav_wminiaudio(filename, new_file):
 def convert_flac_files(data_directory):
 
     for group in os.listdir(data_directory):
+
         if not group.startswith('.'):
             group_folder = os.path.join(data_directory, group)
             for speaker in os.listdir(group_folder):
@@ -75,14 +83,15 @@ def convert_flac_files(data_directory):
                             filename = os.path.join(speaker_folder, file)
                             new_file = file[:-4]+'wav'
                             flac_to_wav_wminiaudio(filename,
-                                        os.path.join(speaker_folder, new_file))
+                                                   os.path.join(speaker_folder, new_file))
                 # When sounfile library is fixed use:
                 # data, samplerate = sf.read(os.path.join(speaker_folder, file))
                 # sf.write(new_file, data, samplerate, 'PCM_16')
 
     print('.flac files converted to .wav')
 
-wk_directory='/Users/carlos/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
+
+wk_directory = '/Users/carlos/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
 os.chdir(wk_directory)
 
 data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
@@ -91,18 +100,14 @@ data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
 
 ################################################################################
 
-from data_generator import vis_train_features
 json_file = 'train_corpus_local.json'
 # extract label and audio features for a single training example
 vis_text, vis_raw_audio, vis_mfcc_feature, \
     vis_spectrogram_feature, vis_audio_path = \
-        vis_train_features(desc_file=json_file)
+    vis_train_features(desc_file=json_file)
 
 ################################################################################
 
-from IPython.display import Markdown, display
-from data_generator import vis_train_features, plot_raw_audio
-from IPython.display import Audio
 
 # plot audio signal
 plot_raw_audio(vis_raw_audio)

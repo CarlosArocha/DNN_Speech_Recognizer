@@ -1,3 +1,5 @@
-numpy==1.21
-numba==0.55.2
+IPython==8.4.0
+numpy==1.23.1
+numba==0.55pip in.2
+
 
