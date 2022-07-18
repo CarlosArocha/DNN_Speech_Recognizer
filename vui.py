@@ -1,9 +1,9 @@
-# Checking the json file with the original data to adapt it to my storage location
-# for the same data, and updating the file in a new file named: 'train_corpus_local.json'
+# Checking the json file with the original data to adapt it to my storage
+# location for the same data, and updating the file in a new file named:
+# 'train_corpus_local.json'
 from IPython.display import Audio
 from data_generator import vis_train_features, plot_raw_audio
 from IPython.display import Markdown, display
-from data_generator import vis_train_features
 import json
 import os
 import numpy as np
@@ -19,7 +19,8 @@ def json_to_local(desc_file='train_corpus.json',
     with open(desc_file) as json_line_file:
         for json_line in json_line_file:
             spec = json.loads(json_line)
-            keys.append(spec['key'].replace('/data/nlpnd_projects/', new_base_path))
+            keys.append(spec['key'].replace('/data/nlpnd_projects/',
+                        new_base_path))
             durations.append(spec['duration'])
             labels.append(spec['text'])
         json_line_file.close()
@@ -83,39 +84,40 @@ def convert_flac_files(data_directory):
                             filename = os.path.join(speaker_folder, file)
                             new_file = file[:-4]+'wav'
                             flac_to_wav_wminiaudio(filename,
-                                                   os.path.join(speaker_folder, new_file))
+                                                   os.path.join(speaker_folder,
+                                                                new_file))
                 # When sounfile library is fixed use:
-                # data, samplerate = sf.read(os.path.join(speaker_folder, file))
+                # data,samplerate = sf.read(os.path.join(speaker_folder, file))
                 # sf.write(new_file, data, samplerate, 'PCM_16')
 
     print('.flac files converted to .wav')
 
 
-wk_directory = '/Users/carlos/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
-os.chdir(wk_directory)
+## wk_directory = '/Users/carlos/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
+# os.chdir(wk_directory)
 
-data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
+## data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
 # TO CONVERT THE DATA FROM FLAC TO WAV
 # convert_flac_files(data_directory, )
 
-################################################################################
+###############################################################################
 
-json_file = 'train_corpus_local.json'
+## json_file = 'train_corpus_local.json'
 # extract label and audio features for a single training example
-vis_text, vis_raw_audio, vis_mfcc_feature, \
-    vis_spectrogram_feature, vis_audio_path = \
-    vis_train_features(desc_file=json_file)
+# vis_text, vis_raw_audio, vis_mfcc_feature, \
+    # vis_spectrogram_feature, vis_audio_path = \
+    # vis_train_features(desc_file=json_file)
 
-################################################################################
+###############################################################################
 
 
 # plot audio signal
-plot_raw_audio(vis_raw_audio)
+# plot_raw_audio(vis_raw_audio)
 # print length of audio signal
-display(Markdown('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape)))
+## display(Markdown('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape)))
 # print transcript corresponding to audio clip
-display(Markdown('**Transcript** : ' + str(vis_text)))
+## display(Markdown('**Transcript** : ' + str(vis_text)))
 # play the audio file
-Audio(vis_audio_path)
+# Audio(vis_audio_path)
 
-################################################################################
+###############################################################################
