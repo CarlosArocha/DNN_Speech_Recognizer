@@ -93,31 +93,31 @@ def convert_flac_files(data_directory):
     print('.flac files converted to .wav')
 
 
-## wk_directory = '/Users/carlos/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
-# os.chdir(wk_directory)
+wk_directory = '/Users/carlosarocha/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
+os.chdir(wk_directory)
 
-## data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
+data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
 # TO CONVERT THE DATA FROM FLAC TO WAV
-# convert_flac_files(data_directory, )
+convert_flac_files(data_directory, )
 
 ###############################################################################
 
-## json_file = 'train_corpus_local.json'
+json_file = 'train_corpus_local.json'
 # extract label and audio features for a single training example
-# vis_text, vis_raw_audio, vis_mfcc_feature, \
-    # vis_spectrogram_feature, vis_audio_path = \
-    # vis_train_features(desc_file=json_file)
+vis_text, vis_raw_audio, vis_mfcc_feature, \
+    vis_spectrogram_feature, vis_audio_path = \
+    vis_train_features(desc_file=json_file)
 
 ###############################################################################
 
 
 # plot audio signal
-# plot_raw_audio(vis_raw_audio)
+plot_raw_audio(vis_raw_audio)
 # print length of audio signal
-## display(Markdown('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape)))
+display(Markdown('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape)))
 # print transcript corresponding to audio clip
-## display(Markdown('**Transcript** : ' + str(vis_text)))
+display(Markdown('**Transcript** : ' + str(vis_text)))
 # play the audio file
-# Audio(vis_audio_path)
+Audio(vis_audio_path)
 
 ###############################################################################
