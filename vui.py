@@ -1,9 +1,12 @@
 # Checking the json file with the original data to adapt it to my storage
 # location for the same data, and updating the file in a new file named:
 # 'train_corpus_local.json'
-from IPython.display import Audio
 from data_generator import vis_train_features, plot_raw_audio
+from data_generator import plot_spectrogram_feature
+from data_generator import plot_mfcc_feature
 from IPython.display import Markdown, display
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib.pyplot as plt
 import json
 import os
 import numpy as np
@@ -31,7 +34,7 @@ def json_to_local(desc_file='train_corpus.json',
             out_file.write(line + '\n')
         out_file.close()
 
-    print('New file ready')
+    print('New json file ready')
 
 
 def play_back_file(filename):
@@ -68,7 +71,7 @@ def flac_to_wav_wminiaudio(filename, new_file):
     # print(output_info)
 
 
-def convert_flac_files(data_directory):
+def convert_flac_files(data_directory, lib='mini'):
 
     for group in os.listdir(data_directory):
 
@@ -83,22 +86,28 @@ def convert_flac_files(data_directory):
                                 file.endswith('.flac'):
                             filename = os.path.join(speaker_folder, file)
                             new_file = file[:-4]+'wav'
-                            flac_to_wav_wminiaudio(filename,
-                                                   os.path.join(speaker_folder,
-                                                                new_file))
-                # When sounfile library is fixed use:
-                # data,samplerate = sf.read(os.path.join(speaker_folder, file))
-                # sf.write(new_file, data, samplerate, 'PCM_16')
+                            new_path = os.path.join(speaker_folder, new_file)
+                            if lib == 'mini':
+                                flac_to_wav_wminiaudio(filename, new_path)
+                            elif lib == 'sf':
+                                data, samplerate = sf.read(filename)
+                                sf.write(new_path, data, samplerate, 'PCM_16')
 
-    print('.flac files converted to .wav')
+    print('.flac files converted to .wav with {}'.format(lib))
 
 
-wk_directory = '/Users/carlosarocha/Dropbox/AI/GITHUB/UDACITY/NLP/DNN_Speech_Recognizer'
+wk_directory = '/Users/carlosarocha/Dropbox/AI/GITHUB/UDACITY/NLP/' +\
+    'DNN_Speech_Recognizer'
 os.chdir(wk_directory)
-
 data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
-# TO CONVERT THE DATA FROM FLAC TO WAV
-convert_flac_files(data_directory, )
+
+# FIRST STEP: Change original json file to a file with the local addresses of
+# sound files
+# json_to_local()
+
+# SECOND STEP: TO CONVERT THE DATA FROM FLAC TO WAV,we can use sounfile library
+# lib='sf' or miniaudion library lib='mini'
+# convert_flac_files(data_directory, lib='sf')
 
 ###############################################################################
 
@@ -113,11 +122,25 @@ vis_text, vis_raw_audio, vis_mfcc_feature, \
 
 # plot audio signal
 plot_raw_audio(vis_raw_audio)
+plt.show(block=False)
 # print length of audio signal
-display(Markdown('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape)))
+print('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape))
 # print transcript corresponding to audio clip
-display(Markdown('**Transcript** : ' + str(vis_text)))
+print('**Transcript** : ' + str(vis_text))
 # play the audio file
-Audio(vis_audio_path)
+# play_back_file(vis_audio_path)
+
 
 ###############################################################################
+
+# plot normalized spectrogram
+plot_spectrogram_feature(vis_spectrogram_feature)
+# print shape of spectrogram
+print('**Shape of Spectrogram** : ' + str(vis_spectrogram_feature.shape))
+
+###############################################################################
+
+# plot normalized MFCC
+plot_mfcc_feature(vis_mfcc_feature)
+# print shape of MFCC
+print('**Shape of MFCC** : ' + str(vis_mfcc_feature.shape))
