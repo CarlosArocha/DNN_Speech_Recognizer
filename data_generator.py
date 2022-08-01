@@ -4,7 +4,6 @@ them to the network for training or testing.
 """
 
 import json
-import os
 import numpy as np
 import random
 from python_speech_features import mfcc
@@ -21,12 +20,13 @@ RNG_SEED = 123
 
 class AudioGenerator():
     def __init__(self, step=10, window=20, max_freq=8000, mfcc_dim=13,
-                 minibatch_size=20, desc_file=None, spectrogram=True, max_duration=10.0,
-                 sort_by_duration=False):
+                 minibatch_size=20, desc_file=None, spectrogram=True,
+                 max_duration=10.0, sort_by_duration=False):
         """
         Params:
-            step (int): Step size in milliseconds between windows (for spectrogram ONLY)
-            window (int): FFT window size in milliseconds (for spectrogram ONLY)
+            step (int): Step size in milliseconds between windows
+            (for spectrogram ONLY)
+            window (int):FFT window size in milliseconds (for spectrogram ONLY)
             max_freq (int): Only FFT bins corresponding to frequencies between
                 [0, max_freq] are returned (for spectrogram ONLY)
             desc_file (str, optional): Path to a JSON-line file that contains
@@ -82,7 +82,8 @@ class AudioGenerator():
 
         # initialize the arrays
         X_data = np.zeros([self.minibatch_size, max_length,
-                           self.feat_dim*self.spectrogram + self.mfcc_dim*(not self.spectrogram)])
+                           self.feat_dim*self.spectrogram +
+                           self.mfcc_dim*(not self.spectrogram)])
         labels = np.ones([self.minibatch_size, max_string_length]) * 28
         input_length = np.zeros([self.minibatch_size, 1])
         label_length = np.zeros([self.minibatch_size, 1])
@@ -111,11 +112,15 @@ class AudioGenerator():
         """ Shuffle the training or validation data
         """
         if partition == 'train':
-            self.train_audio_paths, self.train_durations, self.train_texts = shuffle_data(
-                self.train_audio_paths, self.train_durations, self.train_texts)
+            self.train_audio_paths, self.train_durations, \
+                self.train_texts = shuffle_data(
+                    self.train_audio_paths, self.train_durations,
+                    self.train_texts)
         elif partition == 'valid':
-            self.valid_audio_paths, self.valid_durations, self.valid_texts = shuffle_data(
-                self.valid_audio_paths, self.valid_durations, self.valid_texts)
+            self.valid_audio_paths, self.valid_durations, \
+                self.valid_texts = shuffle_data(
+                    self.valid_audio_paths, self.valid_durations,
+                    self.valid_texts)
         else:
             raise Exception("Invalid partition. "
                             "Must be train/validation")
@@ -124,11 +129,15 @@ class AudioGenerator():
         """ Sort the training or validation sets by (increasing) duration
         """
         if partition == 'train':
-            self.train_audio_paths, self.train_durations, self.train_texts = sort_data(
-                self.train_audio_paths, self.train_durations, self.train_texts)
+            self.train_audio_paths, self.train_durations, \
+                self.train_texts = sort_data(
+                    self.train_audio_paths, self.train_durations,
+                    self.train_texts)
         elif partition == 'valid':
-            self.valid_audio_paths, self.valid_durations, self.valid_texts = sort_data(
-                self.valid_audio_paths, self.valid_durations, self.valid_texts)
+            self.valid_audio_paths, self.valid_durations, \
+                self.valid_texts = sort_data(
+                    self.valid_audio_paths, self.valid_durations,
+                    self.valid_texts)
         else:
             raise Exception("Invalid partition. "
                             "Must be train/validation")
@@ -139,7 +148,8 @@ class AudioGenerator():
         while True:
             ret = self.get_batch('train')
             self.cur_train_index += self.minibatch_size
-            if self.cur_train_index >= len(self.train_texts) - self.minibatch_size:
+            if self.cur_train_index >= len(self.train_texts) - \
+                    self.minibatch_size:
                 self.cur_train_index = 0
                 self.shuffle_data_by_partition('train')
             yield ret
@@ -150,7 +160,8 @@ class AudioGenerator():
         while True:
             ret = self.get_batch('valid')
             self.cur_valid_index += self.minibatch_size
-            if self.cur_valid_index >= len(self.valid_texts) - self.minibatch_size:
+            if self.cur_valid_index >= len(self.valid_texts) - \
+                    self.minibatch_size:
                 self.cur_valid_index = 0
                 self.shuffle_data_by_partition('valid')
             yield ret
@@ -161,7 +172,8 @@ class AudioGenerator():
         while True:
             ret = self.get_batch('test')
             self.cur_test_index += self.minibatch_size
-            if self.cur_test_index >= len(self.test_texts) - self.minibatch_size:
+            if self.cur_test_index >= len(self.test_texts) - \
+                    self.minibatch_size:
                 self.cur_test_index = 0
             yield ret
 
@@ -290,7 +302,8 @@ def vis_train_features(index=0, desc_file=None):
     audio_gen = AudioGenerator(desc_file=desc_file, spectrogram=True)
     audio_gen.load_train_data(desc_file=desc_file)
     vis_audio_path = audio_gen.train_audio_paths[index]
-    vis_spectrogram_feature = audio_gen.normalize(audio_gen.featurize(vis_audio_path))
+    vis_spectrogram_feature = \
+        audio_gen.normalize(audio_gen.featurize(vis_audio_path))
     # obtain mfcc
     audio_gen = AudioGenerator(desc_file=desc_file, spectrogram=False)
     audio_gen.load_train_data(desc_file=desc_file)
@@ -300,9 +313,11 @@ def vis_train_features(index=0, desc_file=None):
     # obtain raw audio
     vis_raw_audio, _ = librosa.load(vis_audio_path)
     # print total number of training examples
-    print('There are %d total training examples.' % len(audio_gen.train_audio_paths))
+    print('There are %d total training examples.' %
+          len(audio_gen.train_audio_paths))
     # return labels for plotting
-    return vis_text, vis_raw_audio, vis_mfcc_feature, vis_spectrogram_feature, vis_audio_path
+    return vis_text, vis_raw_audio, vis_mfcc_feature, vis_spectrogram_feature,
+    vis_audio_path
 
 
 def plot_raw_audio(vis_raw_audio):

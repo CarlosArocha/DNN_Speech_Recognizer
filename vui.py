@@ -6,6 +6,15 @@ from data_generator import plot_spectrogram_feature
 from data_generator import plot_mfcc_feature
 from IPython.display import Markdown, display
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+from keras.backend import set_session
+import tensorflow as tf
+
+# import NN architectures for speech recognition
+from sample_models import *
+# import function for training acoustic model
+from train_utils import train_model
+
 import matplotlib.pyplot as plt
 import json
 import os
@@ -16,7 +25,7 @@ import array
 
 
 def json_to_local(desc_file='train_corpus.json',
-                  new_file='train_corpus_local.json'):
+                  new_file='train_corpus_local.json', folder='dev-clean'):
     new_base_path = '/Volumes/OutSSD/DATA/NLP/'
     keys, durations, labels = [], [], []
     with open(desc_file) as json_line_file:
@@ -99,34 +108,38 @@ def convert_flac_files(data_directory, lib='mini'):
 wk_directory = '/Users/carlosarocha/Dropbox/AI/GITHUB/UDACITY/NLP/' +\
     'DNN_Speech_Recognizer'
 os.chdir(wk_directory)
-data_directory = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
+data_directory_test = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/dev-clean'
+data_directory_valid = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/test-clean'
 
 # FIRST STEP: Change original json file to a file with the local addresses of
 # sound files
 # json_to_local()
+# json_to_local(desc_file='valid_corpus.json',
+#               new_file='valid_corpus_local.json')
 
 # SECOND STEP: TO CONVERT THE DATA FROM FLAC TO WAV,we can use sounfile library
 # lib='sf' or miniaudion library lib='mini'
-# convert_flac_files(data_directory, lib='sf')
+# convert_flac_files(data_directory_valid, lib='sf')
+# convert_flac_files(data_directory_valid, lib='sf')
 
 ###############################################################################
 
-json_file = 'train_corpus_local.json'
+# (todo) json_file = 'train_corpus_local.json'
 # extract label and audio features for a single training example
-vis_text, vis_raw_audio, vis_mfcc_feature, \
-    vis_spectrogram_feature, vis_audio_path = \
-    vis_train_features(desc_file=json_file)
+# (todo) vis_text, vis_raw_audio, vis_mfcc_feature, \
+# (todo)     vis_spectrogram_feature, vis_audio_path = \
+# (todo)     vis_train_features(desc_file=json_file)
 
 ###############################################################################
 
 
 # plot audio signal
-plot_raw_audio(vis_raw_audio)
-plt.show(block=False)
+# (todo) plot_raw_audio(vis_raw_audio)
+# (todo) plt.show(block=False)
 # print length of audio signal
-print('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape))
+# (todo) print('**Shape of Audio Signal** : ' + str(vis_raw_audio.shape))
 # print transcript corresponding to audio clip
-print('**Transcript** : ' + str(vis_text))
+# (todo) print('**Transcript** : ' + str(vis_text))
 # play the audio file
 # play_back_file(vis_audio_path)
 
@@ -134,13 +147,64 @@ print('**Transcript** : ' + str(vis_text))
 ###############################################################################
 
 # plot normalized spectrogram
-plot_spectrogram_feature(vis_spectrogram_feature)
+# (t) plot_spectrogram_feature(vis_spectrogram_feature)
 # print shape of spectrogram
-print('**Shape of Spectrogram** : ' + str(vis_spectrogram_feature.shape))
+# (t) print('**Shape of Spectrogram** : ' + str(vis_spectrogram_feature.shape))
 
 ###############################################################################
 
 # plot normalized MFCC
-plot_mfcc_feature(vis_mfcc_feature)
+# (todo) plot_mfcc_feature(vis_mfcc_feature)
 # print shape of MFCC
-print('**Shape of MFCC** : ' + str(vis_mfcc_feature.shape))
+# (todo) print('**Shape of MFCC** : ' + str(vis_mfcc_feature.shape))
+
+###############################################################################
+# Creating the model:
+# config = tf.compat.v1.ConfigProto()
+# config.gpu_options.per_process_gpu_memory_fraction = 0.5
+# set_session(tf.compat.v1.Session(config=config))
+
+# change to 13 if you would like to use MFCC features
+'''model_end = final_model(input_dim=161,
+                        filters=5,
+                        kernel_size=11,
+                        conv_stride=1,
+                        conv_border_mode='valid',
+                        recur_layers=1,
+                        dropout_cnn=0.1,
+                        dropout_gru=0.5,
+                        use_bias=False,
+                        bi=False,
+                        units=100)
+'''
+model_end = simple_rnn_model(input_dim=161)
+
+# change spectrogram to False if you would like to use MFCC features
+# print(tf.config.list_physical_devices())
+# print("Num GPUs Available: ",
+#      len(tf.config.experimental.list_physical_devices('GPU')))
+
+train_model(input_to_softmax=model_end,
+            pickle_path='model_end.pickle',
+            save_model_path='model_end.h5',
+            epochs=2,
+            spectrogram=True,
+            verbose=1)
+
+'''mnist = tf.keras.datasets.mnist
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10)
+])
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+model.compile(optimizer='adam',
+              loss=loss_fn,
+              metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=10, verbose=1)'''

@@ -1,4 +1,4 @@
-IPython==8.4.0
+juptyerjuIPython==8.4.0
 numpy==1.23.1git
 numba==0.55
 python-speech-features
