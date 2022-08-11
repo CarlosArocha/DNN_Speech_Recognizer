@@ -316,8 +316,7 @@ def vis_train_features(index=0, desc_file=None):
     print('There are %d total training examples.' %
           len(audio_gen.train_audio_paths))
     # return labels for plotting
-    return vis_text, vis_raw_audio, vis_mfcc_feature, vis_spectrogram_feature,
-    vis_audio_path
+    return vis_text, vis_raw_audio, vis_mfcc_feature, vis_spectrogram_feature, vis_audio_path
 
 
 def plot_raw_audio(vis_raw_audio):

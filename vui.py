@@ -8,6 +8,8 @@ from IPython.display import Markdown, display
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from keras.backend import set_session
+import keras
+from keras.optimizers import Adam
 import tensorflow as tf
 
 # import NN architectures for speech recognition
@@ -175,8 +177,8 @@ data_directory_valid = '/Volumes/OutSSD/DATA/NLP/LibriSpeech/test-clean'
                         dropout_gru=0.5,
                         use_bias=False,
                         bi=False,
-                        units=100)
-'''
+                        units=100)'''
+
 model_end = simple_rnn_model(input_dim=161)
 
 # change spectrogram to False if you would like to use MFCC features
@@ -188,6 +190,12 @@ train_model(input_to_softmax=model_end,
             pickle_path='model_end.pickle',
             save_model_path='model_end.h5',
             epochs=2,
+            optimizer=Adam(learning_rate=0.001,
+                           beta_1=0.9,
+                           beta_2=0.999,
+                           epsilon=1e-07,
+                           amsgrad=False,
+                           name="Adam",),
             spectrogram=True,
             verbose=1)
 
@@ -207,4 +215,5 @@ model.compile(optimizer='adam',
               loss=loss_fn,
               metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=10, verbose=1)'''
+model.fit(x_train, y_train, epochs=10, verbose=1)
+'''
